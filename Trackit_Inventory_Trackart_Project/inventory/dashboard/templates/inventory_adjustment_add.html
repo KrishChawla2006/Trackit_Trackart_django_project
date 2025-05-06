@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <!-- Card with shadow and rounded corners -->
+    <div class="card shadow-lg rounded">
+        <div class="card-header" style="background-color: #001f3d; color: white;">
+            <h5 class="card-title mb-0">New Adjustment</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="">
+                {% csrf_token %}
+                
+                <!-- Row for Date and Reference Number -->
+                <div class="row mb-4">
+                    <!-- Date -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="date" class="form-label">Date:</label>
+                            <input type="date" class="form-control" id="date" name="date" required>
+                        </div>
+                    </div>
+
+                    <!-- Reference Number -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="reference_number" class="form-label">Reference Number:</label>
+                            <input type="text" class="form-control" id="reference_number" name="reference_number" placeholder="Enter Reference Number">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row for Account and Reason -->
+                <div class="row mb-4">
+                    <!-- Account -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="account" class="form-label">Account:</label>
+                            <select class="form-select" id="account" name="account" required>
+                                <option value="Cost of Goods Sold">Cost of Goods Sold</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Reason -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="reason" class="form-label">Reason:</label>
+                            <select class="form-select" id="reason" name="reason" required>
+                                <option value="Damage">Damage</option>
+                                <option value="Theft">Theft</option>
+                                <option value="Spoilage">Spoilage</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row for Description and Item Name -->
+                <div class="row mb-4">
+                    <!-- Description -->
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="description" class="form-label">Description:</label>
+                            <textarea class="form-control" id="description" name="description" rows="4" placeholder="Provide details about the adjustment"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row for Item Name, Quantity Available, and Quantity Adjusted -->
+                <div class="row mb-4">
+                    <!-- Item Name -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="item_name" class="form-label">Item Name:</label>
+                            <input type="text" class="form-control" id="item_name" name="item_name" required placeholder="Enter Item Name">
+                        </div>
+                    </div>
+
+                    <!-- Quantity Available -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="quantity_available" class="form-label">Quantity Available:</label>
+                            <input type="number" class="form-control" id="quantity_available" name="quantity_available" required placeholder="Available Quantity">
+                        </div>
+                    </div>
+
+                    <!-- Quantity Adjusted -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="quantity_adjusted" class="form-label">Quantity Adjusted:</label>
+                            <input type="number" class="form-control" id="quantity_adjusted" name="quantity_adjusted" required placeholder="Adjusted Quantity">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row for New Quantity on Hand -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="new_quantity_on_hand" class="form-label">New Quantity on Hand:</label>
+                            <input type="number" class="form-control" id="new_quantity_on_hand" name="new_quantity_on_hand" required placeholder="Enter New Quantity">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn" style="background-color: #001f3d; color: white; border: none;">
+                        <i class="bi bi-save"></i> Save Adjustment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

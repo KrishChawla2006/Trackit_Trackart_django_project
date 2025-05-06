@@ -1,0 +1,14 @@
+<!-- sales/templates/sales/add_customer.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="table-container">
+    <h2 class="mb-4">Add Customer</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}  
+        <button type="submit" class="btn new-button">Add Customer</button>
+        <a href="{% url 'customer_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+<!-- sales/templates/sales/sales_order.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="table-container">
+    <h2 class="mb-4">Sales Orders</h2>
+    <h4>Total Orders: {{ total_orders }}</h4>
+    
+   {% if user_role == "manager" %}
+
+    <a href="{% url 'new_order' %}" class="btn new-button mb-3">Add New Order</a>
+    {% endif %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Sales Order No</th>
+                <th>Reference No</th>
+                <th>Customer</th>
+                <th>Order Status</th>
+                <th>Shipment Status</th>
+                <th>Total Amount</th>
+                <th>Amount Received</th>
+                <th>Amount Due</th>
+                {% if user_role == "manager" %}
+                <th>Actions</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.sales_order_no }}</td>
+                <td>{{ order.reference_no }}</td>
+                <td>{{ order.customer.name }}</td>
+                <td>{{ order.order_status }}</td>
+                <td>{{ order.shipment_status }}</td>
+                <td>{{ order.total_amount }}</td>
+                <td>{{ order.amount_received }}</td>
+                <td>{{ order.amount_due }}</td>
+                {% if user_role == "manager" %}
+                <td>
+                    <a href="{% url 'edit_order' order.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                    <form action="{% url 'delete_order' order.pk %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+                {% endif %}
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9" class="text-center">No sales orders found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

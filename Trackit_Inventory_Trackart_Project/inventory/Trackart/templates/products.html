@@ -1,0 +1,987 @@
+
+{% extends 'basee.html' %}   
+{% load static %}
+ {% block title_block %}
+    <title>products/page</title>
+ {% endblock %}
+
+ {% block style_block %}
+    
+ <style>
+     *{
+         margin: 0;
+         padding: 0%;
+
+    }
+    body{
+        height: 100vh;
+    }
+   
+
+.card-title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0;
+    display: inline-block;
+    padding-bottom: 2px; 
+    transition: border-bottom 0.3s ease; 
+    border-bottom: 2px solid transparent; 
+}
+
+.furniture-grid-label:hover {
+    border-bottom-color: #333;
+}
+
+.sidebar-link {
+    color: #333;
+    
+    display: block;
+    /* transition: all 0.3s; */
+    text-decoration: none;
+    border-bottom: 2px solid transparent; 
+    
+}
+
+.sidebar-link:hover {
+    
+    text-decoration:underline #333;
+    
+}
+
+    .sidebar-link:active {
+        background-color: #0e7deb;
+        font-weight: bold;
+
+    }
+    .chatbot-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        transition: transform 0.2s ease-in-out;
+    }
+    .chatbot-btn:hover {
+        transform: scale(1.1);
+    }
+    .chatbot-container {
+        position: fixed;
+        bottom: 100px;
+        right: -400px;
+        width: 350px;
+        height: 500px;
+        background-color: #fff;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        z-index: 1000;
+        transition: right 0.3s ease-in-out;
+    }
+    .chatbot-container.open {
+        right: 20px;
+    }
+    .chatbot-body {
+        flex-grow: 1;
+        overflow-y: auto;
+        background-color: #f9f9f9;
+        padding: 15px;
+    }
+    .chat-message {
+        margin-bottom: 15px;
+        padding: 10px 15px;
+        border-radius: 10px;
+        max-width: 85%;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    }
+    .chat-message.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .user-message {
+        background-color: #007bff;
+        color: white;
+        margin-left: auto;
+        border-bottom-right-radius: 2px;
+    }
+    .bot-message {
+        background-color: #e9ecef;
+        color: #343a40;
+        margin-right: auto;
+        border-bottom-left-radius: 2px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .loading-message {
+        background-color: #f1f1f1;
+        color: #666;
+        font-style: italic;
+        display: flex;
+        align-items: center;
+    }
+    .loading-message .spinner-border {
+        margin-right: 8px;
+        width: 1rem;
+        height: 1rem;
+    }
+    .voice-btn {
+        background: none;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 0 5px;
+        margin-left: 5px;
+        transition: transform 0.1s ease-in-out, color 0.1s ease-in-out;
+        opacity: 0.8;
+    }
+    .voice-btn:hover {
+        transform: scale(1.1);
+        color: #007bff;
+        opacity: 1;
+    }
+    .voice-btn:active {
+        transform: scale(0.9);
+    }
+    .chatbot-input .form-control {
+        border-radius: 5px;
+    }
+    .chatbot-input .btn {
+        border-radius: 5px;
+    }
+    .chatbot-input .form-control:disabled {
+        background-color: #e9ecef;
+        opacity: 0.7;
+    }
+    .chatbot-input .btn:disabled {
+        opacity: 0.7;
+    }
+    .chatbot-body::-webkit-scrollbar {
+        width: 8px;
+    }
+    .chatbot-body::-webkit-scrollbar-track {
+        background: #f9f9f9;
+    }
+    .chatbot-body::-webkit-scrollbar-thumb {
+        background: #adb5bd;
+        border-radius: 4px;
+    }
+    .voice-btn.btn-error {
+        color: red;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+    .voice-btn.btn-error:hover {
+        transform: none;
+        color: red;
+        opacity: 0.6;
+    }
+    
+        </style>
+        {% endblock %}
+
+{% block main_block %}
+<!-- create side bar -->
+<!-- Bootstrap Carousel with Top-Right Controls -->
+<!-- addproduct Modal -->
+
+
+<div class="modal fade" id="addproduct" tabindex="-1" role="dialog" aria-labelledby="addProductLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: rgb(14, 189, 247);">
+                <h5 class="modal-title" id="signupModalLabel" >Add a Product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+                <form id="addProductForm" method="POST">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        
+                        <label for="category"><i class="fa-solid fa-list"></i>&nbsp;Category</label>
+                        <select name="category" id="category">
+                            <option value="">Select Product Category</option>
+                            <option value="furniture">Furniture</option>
+                            <option value="tabletop_bar">Tabletop & Bar</option>
+                            <option value="kitchen">Kitchen</option>
+                            <option value="bedding">Bedding</option>
+                            <option value="bath">Bath</option>
+                            <option value="decor_pillow">Decor & Pillow</option>
+                            <option value="lighting">Lighting</option>
+                            <option value="window">Window</option>
+                            
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        
+                        <label for="sub-category"><i class="fa-solid fa-list"></i>&nbsp;Sub-Category</label>
+                        <select name="sub_category" id="sub-category">
+                            <option value="">Select Product Sub-Category</option>
+                            <optgroup label="Furniture">
+                                <option value="livingroom">Living Room</option>
+                                <option value="dining_room">Dining Room</option>
+                                <option value="bedroom">Bed Room</option>
+                                <option value="outdoor">Outdoor</option>
+                                <option value="home_office_furniture">Home Office Furniture</option>
+                                <option value="entry_way_furniture">Entry Way Furniture</option>
+                                
+                            </optgroup>
+                            
+                            <optgroup label="Tabletop & Bar">
+                                <option value="dinnerware">Dinnerware</option>
+                                <option value="serveware">Serveware</option>
+                                <option value="drinkware">Drinkware</option>
+                                <option value="bar_tools_accessories">Bar tools&accessories</option>
+                                <option value="table_linnens">Table linnens</option>
+                                
+                                
+                            </optgroup>
+                            
+                            <optgroup label="Kitchen">
+                                <option value="kitchen_appliences_electronics">Kitchen Appliences Electronics</option>
+                                <option value="coffee_espresso_tea">Coffee Espresso Tea</option>
+                                <option value="cookware_bakeware">Cookware Bakeware</option>
+                                <option value="cutlury_knive">Cutlury Knive</option>                             
+
+                            </optgroup>
+                            
+                            <optgroup label="Bedding">
+                                <option value="bedding_essentials">Bedding Essentials</option>
+                                
+                                
+                            </optgroup>
+                            
+                            
+                    <optgroup label="Bath">
+                        <option value="bath_linnens_towels">Bath Linnens Towels</option>
+                        <option value="bath_accessories_storage">Bath Accessories Storage</option>
+                        <option value="bath_hardware">Bath Hardware</option>
+                        <option value="bath_furniture">Bath Furniture</option>
+                        <option value="bath_sent">Bath Sent</option>
+                        
+
+                    </optgroup>
+                    <optgroup label="Decor & Pillow">
+                        <option value="pillows_cushions">Pillows&Cushions</option>
+                        <option value="wall_art_frames">Wall Art Frames</option>
+                        <option value="mirrors">Mirrors</option>
+                        <option value="botanicals_vases">Botanicals Vases</option>
+                        <option value="candles_fragrance">candles-fragrance</option>
+                        <option value="decorative_objects">Decorative Objects</option>
+                                                  
+
+                    </optgroup>
+                    <optgroup label="Lighting">
+                        <option value="ceiling_lights">Ceiling Lights</option>
+                        <option value="table_floor_lamps">Table Floor Lamps</option>
+                        <option value="wall_light_sconces">Wall Light Sconces</option>
+                        
+                        
+
+                    </optgroup>
+                    <optgroup label="Window">
+                        <option value="all_window_curtains">All Cindow Curtains</option>
+                        <option value="blackout_curtains">Blackout Curtains</option>
+                        <option value="sheer_curtains">Sheer Curtains</option>
+                        <option value="window_curtain_hardware">Window Curtain Hardware</option>
+                    </optgroup>
+
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="link"><i class="fa-solid fa-link"></i>&nbsp;Enter Url:</label>
+                        <input type="url" class="form-control" id="link" placeholder="Enter Image URL" name="image_link" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description"><i class="fa-solid fa-list"></i>&nbsp;Product Name:</label>
+                        <textarea name="description" id="description" placeholder="Enter Product Name Description"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="oprice"><i class="fa-solid fa-tag"></i>&nbsp;Enter Original Price:</label>
+                        <input type="number" class="form-control" id="oprice" name="original_price" required >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sprice"><i class="fa-solid fa-tag"></i>&nbsp;Enter Offer Price:</label>
+                        <input type="number" class="form-control" id="sprice"  name="offer_price" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dprice"><i class="fa-solid fa-tag"></i>&nbsp;Enter Discount:</label>
+                        <input type="number" class="form-control" id="dprice"  name="discount" required>
+                    </div>
+                    
+                    
+                    
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    
+                    
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+{% if status == True %}
+<!-- Update Modal -->
+<div class="modal fade" id="updateProductModal" tabindex="-1" role="dialog" aria-labelledby="updateProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: rgb(14, 189, 247);">
+                <h5 class="modal-title" id="updateProductModalLabel">Add a Product</h5>
+                
+            </div>
+            <div class="modal-body">
+                <form id="updateProductForm" method="POST" action="">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="category"><i class="fa-solid fa-list"></i> Category</label>
+                        <input type="text" class="form-control" id="category" placeholder="Enter Category" name="category" value="{{ product_detail.category }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sub-category"><i class="fa-solid fa-list"></i> Sub-Category</label>
+                        <input type="text" class="form-control" id="sub-category" placeholder="Enter Sub Category" name="sub_category" required value="{{ product_detail.sub_category }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="link"><i class="fa-solid fa-link"></i> Enter URL:</label>
+                        <input type="url" class="form-control" id="link" placeholder="Enter Image URL" name="image_link" required value="{{ product_detail.image_link }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="description"><i class="fa-solid fa-list"></i> Description:</label>
+                        <input type="text" name="description" id="description" placeholder="Enter product description" value="{{ product_detail.description }}" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="oprice"><i class="fa-solid fa-tag"></i> Enter Original Price:</label>
+                        <input type="number" class="form-control" id="oprice" name="original_price" required value="{{ product_detail.original_price }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="sprice"><i class="fa-solid fa-tag"></i> Enter Offer Price:</label>
+                        <input type="number" class="form-control" id="sprice" name="offer_price" required value="{{ product_detail.offer_price }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="dprice"><i class="fa-solid fa-tag"></i> Enter Discount:</label>
+                        <input type="number" class="form-control" id="dprice" name="discount" required value="{{ product_detail.discount }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript to automatically show the modal -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+       
+            $('#updateProductModal').modal('show');
+       
+    });
+
+    
+</script>
+{% endif %}
+<!-- end create products -->
+
+
+
+<div class="container-fluid" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar" style="min-height: 100vh;">
+            <div class="position-sticky pt-3">
+                <h5 class="px-3 mb-3" >Furniture</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{%url 'furniture'%}">
+                            View all Items
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'livingroom'%}">
+                            Living Room
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'diningroom'%}">
+                            Dining Room
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'bedroom'%}">
+                            Bedroom
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'outdoor'%}">
+                            Outdoor
+                        </a>
+                    </li>
+                  
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'home_office_furniture'%}">
+                            Home Office Furniture
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'entry_way_furniture'%}">
+                            Entryway Furniture
+                        </a>
+                    </li>
+                   
+                    
+                </ul>
+                <br>
+                <h5 class="px-3 mb-3">Tabletop & Bar</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{%url 'tabletop_bar' %}">
+                            View all Items
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'dinnerware' %}">
+                            Dinnerware
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'serveware' %}">
+                            Serveware
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'drinkware' %}">
+                            Drinkware
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'bar_tools_accessories' %}">
+                            Bar Tools & Accessories
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'table_linnens' %}">
+                            Table Linens
+                        </a>
+                    </li>
+                   
+                </ul><br>
+                <h5 class="px-3 mb-3">Kitchen</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{%url 'kitchen' %}">
+                            View all Items
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'kitchen_appliences_electronics' %}">
+                            Kitchen Applience & Electronics
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'coffee_espresso_tea' %}">
+                            Coffee,Espresso & Tea Machines
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'cookware_bakeware' %}">
+                            Cookware & Bakeware
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'cutlury_knive' %}">
+                            Cutlery & Knives
+                        </a>
+                    </li>
+                    
+                </ul><br>
+                <h5 class="px-3 mb-3">Bedding</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{%url 'bedding' %}">
+                            View all Items
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'bedding_essentials' %}">
+                           Bedding Essentials
+                        </a>
+                    </li>
+                 
+                </ul>
+                <br>
+                <h5 class="px-3 mb-3">Bath</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{%url 'Bath'%}">
+                            View all Items
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'bath_linnens_towels'%}">
+                           Bath Linens & Towels
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'bath_accessories_storage'%}">
+                            Bath Accessories & Storage
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'bath_hardware'%}">
+                            Bath Hardware
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'bath_furniture'%}">
+                            Bath Furniture
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'bath_sent'%}">
+                            Bath Sents
+                        </a>
+                    </li>
+                </ul>
+                <br>
+                <h5 class="px-3 mb-3">Decor & Pillow</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{%url 'Decor_Pillow'%}">
+                            View all Items
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'pillows_cushions'%}">
+                           Pillows & Cushions
+                        </a>
+                    </li>
+                  
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'mirrors'%}">
+                            Mirrors
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'botanicals_vases'%}">
+                            Botanicals & Vases
+                        </a>
+                    </li>
+                
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'decorative_objects'%}">
+                            Decorative Objects 
+                        </a>
+                    </li>
+                </ul>
+                <br>
+                <h5 class="px-3 mb-3">Lighting</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{%url 'lighting'%}">
+                            View all Items
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'ceiling_lights'%}">
+                           Ceiling Lights
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'table_floor_lamps'%}">
+                            Table & Floor Lamps
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'wall_light_sconces'%}">
+                            Wall Lights & Sconces
+                        </a>
+                    </li>
+                    
+                   
+                </ul>
+                <br>
+                <h5 class="px-3 mb-3">Window</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{%url 'window'%}">
+                            View all Items
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'all_window_curtains'%}">
+                            All Window Curtains
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'blackout_curtains'%}">
+                            Blackout Curtains
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'sheer_curtains'%}">
+                            Sheer Curtains
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'window_curtain_hardware'%}">
+                            Window Curtains Hardware
+                        </a>
+                    </li>
+                </ul>
+                <br>
+            </div>
+        </div>
+
+
+
+        <!-- Main content -->
+        <div class="col-md-9 col-lg-10" >
+            {% if user_role == "staff" or user_role == "manager" %}
+            <div class="text-end my-3 px-3">
+                <button type="button" class="btn btn-lg btn-outline-success shadow-sm px-4 py-2 rounded-pill fw-semibold" data-toggle="modal" data-target="#addproduct">
+                    <a href="{% url 'products' %}"></a><i class="fa-solid fa-plus me-2"></i> Add New Product
+                </button>
+            </div>
+            {% endif %}
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 px-3 py-2">
+                    
+                    
+                    <!-- loop start -->
+                    
+                    
+                    {% for item in products %}
+                        
+                    
+                    <div class="col d-flex">
+                        
+                        <div class="card mx-1 mb-3 shadow-sm" style="padding: 0; border-radius: 10px; height: 422px;width: 260px;">
+                         <div >
+                            
+                            <a href="{% url 'productdetail' product_id=item.id %}" style="text-decoration: none;" target="_blank">
+                                <img src="{{ item.image_link }}" class="card-img-top h-120  w-120" style="object-fit: fill; height: 250px; width: 260px;"  alt="...">
+                            </a>  
+                        </div>
+                            <div class="card-body">
+                                <div>
+                                <p class="card-text">{{ item.description }}
+                                </p>
+                            </div>
+                                <div style="color: black;text-align: center;">Price:<i class="fa-solid fa-indian-rupee-sign"></i>{{  item.offer_price }}&nbsp;
+                                    <span style="text-decoration: line-through; color: rgba(255, 0, 0, 0.575);font-weight: bold;"><i class="fa-solid fa-indian-rupee-sign " style="text-decoration: line-through; margin-bottom:5px !important;"></i>
+                                        {{ item.original_price }}</span></div>
+                                        
+                                    </div>
+
+
+
+                                    <div class="card-footer">
+                                        {% if user_role == "staff" or user_role == "manager" %}
+                                        <div class="d-flex gap-2">
+                                            <button type="button" style="width: 50%;height: 20%;padding: 3%;" class="btn-outline-primary h-100" data-toggle="modal" data-target="">
+                                                <a href="{% url 'edit' product_id=item.id %}" style="color: darkblue;">
+                                                    
+                                                    <i class="fa-solid fa-pen-to-square me-2"></i>Edit
+                                                </a>
+                                                </button>
+                                            <a href="{% url 'delete' product_id=item.id %}" class="btn btn-outline-danger w-50 d-flex align-items-center justify-content-center" style="height: 45px;">
+                                                <i class="fa-solid fa-trash me-2"></i> Delete
+                                            </a>
+                                        </div>
+                                    
+                                        {% else %}
+                                        <div class="d-flex gap-2">
+                                            <a href="{% url 'product_cart' product_id=item.id %}" class="btn btn-outline-success w-50 d-flex align-items-center justify-content-center" style="height: 45px;">
+                                                <i class="fa-solid fa-cart-shopping me-2"></i> Cart
+                                            </a>
+                                            <a href="{% url 'wishlist' product_id=item.id%}" class="btn btn-outline-danger w-50 d-flex align-items-center justify-content-center" style="height: 45px;">
+                                                <i class="fa-regular fa-heart me-2"></i> Wishlist
+                                            </a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                         
+                            </div>
+                            </div>
+                            
+                            
+                            {% endfor %}
+                                
+                                
+                                <!-- loop end -->
+                                
+                            </div>
+                           
+                        </div>
+
+
+
+            </div>
+        </div>
+  
+<!-- Chatbot Container -->
+<button class="chatbot-btn btn btn-primary rounded-circle" onclick="toggleChatbot()" aria-label="Toggle Chatbot">💬</button>
+
+<div class="chatbot-container shadow-lg" id="chatbotContainer">
+    <div class="chatbot-header  text-white p-3 rounded-top d-flex justify-content-between align-items-center" style="background-color: #0c0d17;">
+        <h5 class="mb-0">TrackBot</h5>
+        <button type="button" class="btn-close btn-close-white" onclick="toggleChatbot()" aria-label="Close"></button>
+    </div>
+    <div class="chatbot-body p-3 flex-grow-1" id="chatbotBody">
+        <div class="chat-message bot-message bg-light p-2 rounded mb-2">
+            <span>Welcome to Trackart! How can I help you with our products?</span>
+            <button class="voice-btn" onclick="togglePlayback(this)" aria-label="Play audio">▶️</button>
+        </div>
+    </div>
+    <div class="chatbot-input p-3 border-top">
+        <div class="input-group">
+            <input type="text" id="userInput" class="form-control" placeholder="Type your question..." onkeypress="handleKeyPress(event)">
+            <button id="sendBtn" class="btn btn-primary" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Chatbot JavaScript -->
+<script>
+
+    let currentPlayingAudio = null;
+
+    function toggleChatbot() {
+        const chatbotContainer = document.getElementById('chatbotContainer');
+        chatbotContainer.classList.toggle('open');
+        if (!chatbotContainer.classList.contains('open')) {
+            if (currentPlayingAudio && !currentPlayingAudio.paused) {
+                currentPlayingAudio.pause();
+            }
+        }
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === 'Enter' && !event.target.disabled) {
+            sendMessage();
+            event.preventDefault();
+        }
+    }
+
+    function togglePlayback(button) {
+        const textSpan = button.previousElementSibling;
+        const textToSpeak = textSpan ? textSpan.textContent : '';
+        if (!textToSpeak) {
+            console.error("No text found for speaking.");
+            return;
+        }
+        let audioElement = button.audioElement;
+        if (audioElement) {
+            if (!audioElement.paused) {
+                audioElement.pause();
+                button.textContent = '▶️';
+                button.setAttribute('aria-label', 'Play audio');
+            } else {
+                if (currentPlayingAudio && currentPlayingAudio !== audioElement && !currentPlayingAudio.paused) {
+                    currentPlayingAudio.pause();
+                }
+                audioElement.play();
+                button.textContent = '⏸️';
+                button.setAttribute('aria-label', 'Pause audio');
+                currentPlayingAudio = audioElement;
+            }
+        } else {
+            if (currentPlayingAudio && !currentPlayingAudio.paused) {
+                currentPlayingAudio.pause();
+            }
+            button.textContent = '⏳';
+            button.disabled = true;
+            fetch('{% url "chatbot_speak" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ text: textToSpeak })
+            })
+            .then(response => {
+                button.disabled = false;
+                if (!response.ok) {
+                    button.textContent = '❌';
+                    button.classList.add('btn-error');
+                    button.setAttribute('aria-label', 'Error playing audio');
+                    throw new Error(`Failed to fetch audio: ${response.status} ${response.statusText}`);
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                audioElement = new Audio(URL.createObjectURL(blob));
+                button.audioElement = audioElement;
+                currentPlayingAudio = audioElement;
+                audioElement.onplay = () => {
+                    button.textContent = '⏸️';
+                    button.setAttribute('aria-label', 'Pause audio');
+                    button.classList.remove('btn-error');
+                };
+                audioElement.onpause = () => {
+                    button.textContent = '▶️';
+                    button.setAttribute('aria-label', 'Play audio');
+                    button.classList.remove('btn-error');
+                };
+                audioElement.onended = () => {
+                    button.textContent = '▶️';
+                    button.setAttribute('aria-label', 'Play audio');
+                    currentPlayingAudio = null;
+                    button.classList.remove('btn-error');
+                };
+                audioElement.onerror = () => {
+                    button.textContent = '❌';
+                    button.classList.add('btn-error');
+                    button.setAttribute('aria-label', 'Error playing audio');
+                    currentPlayingAudio = null;
+                    alert('Error playing audio.');
+                };
+                audioElement.play();
+                button.textContent = '⏸️';
+                button.setAttribute('aria-label', 'Pause audio');
+            })
+            .catch(error => {
+                console.error('Error loading or playing audio:', error);
+                button.disabled = false;
+                button.textContent = '❌';
+                button.classList.add('btn-error');
+                button.setAttribute('aria-label', 'Error playing audio');
+                currentPlayingAudio = null;
+                alert('Failed to load or play audio.');
+            });
+        }
+    }
+
+    function sendMessage() {
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        userInput.disabled = true;
+        sendBtn.disabled = true;
+
+        const chatbotBody = document.getElementById('chatbotBody');
+        const userMessage = document.createElement('div');
+        userMessage.className = 'chat-message user-message';
+        userMessage.textContent = message;
+        chatbotBody.appendChild(userMessage);
+        setTimeout(() => userMessage.classList.add('visible'), 10);
+
+        userInput.value = '';
+        scrollToBottom();
+
+        const loadingMessage = document.createElement('div');
+        loadingMessage.className = 'chat-message bot-message loading-message';
+        loadingMessage.innerHTML = `
+            <div class="spinner-border spinner-border-sm text-secondary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            Generating...
+        `;
+        chatbotBody.appendChild(loadingMessage);
+        setTimeout(() => loadingMessage.classList.add('visible'), 10);
+        scrollToBottom();
+
+        fetch('{% url "chatbot_chat" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ message })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.error || `HTTP error! status: ${response.status}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            const loading = chatbotBody.querySelector('.loading-message');
+            if (loading) loading.remove();
+
+            if (currentPlayingAudio && !currentPlayingAudio.paused) {
+                currentPlayingAudio.pause();
+            }
+
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            if (!data.response) {
+                throw new Error('No response field in data from server.');
+            }
+
+            const botMessage = document.createElement('div');
+            botMessage.className = 'chat-message bot-message';
+            botMessage.innerHTML = `
+                <span>${data.response}</span>
+                <button class="voice-btn" onclick="togglePlayback(this)" aria-label="Play audio">▶️</button>
+            `;
+            chatbotBody.appendChild(botMessage);
+            setTimeout(() => botMessage.classList.add('visible'), 10);
+            scrollToBottom();
+
+            userInput.disabled = false;
+            sendBtn.disabled = false;
+            userInput.focus();
+        })
+        .catch(error => {
+            console.error('Error sending message:', error);
+            const loading = chatbotBody.querySelector('.loading-message');
+            if (loading) loading.remove();
+
+            if (currentPlayingAudio && !currentPlayingAudio.paused) {
+                currentPlayingAudio.pause();
+            }
+
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'chat-message bot-message';
+            errorMessage.innerHTML = `
+                <span>Sorry, I encountered an error: ${error.message}</span>
+                <button class="voice-btn btn-error" disabled aria-label="Error">❌</button>
+            `;
+            chatbotBody.appendChild(errorMessage);
+            setTimeout(() => errorMessage.classList.add('visible'), 10);
+            scrollToBottom();
+
+            userInput.disabled = false;
+            sendBtn.disabled = false;
+            userInput.focus();
+        });
+    }
+
+    function scrollToBottom() {
+        const chatbotBody = document.getElementById('chatbotBody');
+        chatbotBody.scrollTop = chatbotBody.scrollHeight;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const initialBotMessage = document.querySelector('.chat-message.bot-message');
+        if (initialBotMessage) {
+            setTimeout(() => initialBotMessage.classList.add('visible'), 50);
+        }
+        const initialVoiceButton = initialBotMessage.querySelector('.voice-btn');
+        if (initialVoiceButton) {
+            initialVoiceButton.onclick = function() { togglePlayback(this); };
+            initialVoiceButton.textContent = '▶️';
+            initialVoiceButton.setAttribute('aria-label', 'Play audio');
+    }})
+</script>
+
+{% endblock %}
+

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid table-responsive">
+    <h1>Purchase Orders</h1>
+    {% if user_role == "manager" %}
+    <a href="{% url 'add_purchase_order' %}" class="btn btn-primary mb-3">New Purchase Order</a>
+    {% endif %}
+    <table class="table table-striped table-hover table-bordered" width="100%">
+        <thead>
+            <tr>
+                <th>Purchase Order No.</th>
+                <th>Reference No.</th>
+                <th>Vendor Name</th>
+                <th>Status</th>
+                <th>Total Amount</th>
+                {% if user_role == "manager" %}
+                <th>Actions</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in purchase_orders %}
+                <tr>
+                    <td>{{ order.purchase_order_no }}</td>
+                    <td>{{ order.reference_no }}</td>
+                    <td>{{ order.vendor.company_name }}</td>  <!-- Display vendor name -->
+                    <td>{{ order.status }}</td>
+                    <td>{{ order.amount }}</td>
+                    {% if user_role == "manager" %}
+                    <td>
+                        <a href="{% url 'edit_purchase_order' order.id %}" class="btn btn-sm btn-secondary"><i class="bi bi-pencil"></i></a> 
+                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteOrderModal{{ order.id }}">
+                            <i class="bi bi-trash"></i>
+                        </button>
+
+                        <div class="modal fade" id="deleteOrderModal{{ order.id }}" tabindex="-1" aria-labelledby="deleteOrderModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteOrderModalLabel">Confirm Deletion</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to delete this purchase order?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <form method="POST" action="{% url 'delete_purchase_order' order.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

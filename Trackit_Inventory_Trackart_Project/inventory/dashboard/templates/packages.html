@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid p-4" style="background-color: #f8f9fa;">
+
+    <!-- Title Section -->
+    <h1 class="my-4 text-center text-dark">Packages Dashboard</h1>
+
+    <!-- Kanban Layout for Order Statuses -->
+    <div class="row mb-4">
+        <!-- Not Shipped Column -->
+        <div class="col-md-4">
+            <div class="kanban-column shadow-sm rounded bg-light" style="background-color: #e8eaf6;">
+                <div class="kanban-header" style="background-color: #c5cae9; color: #2c3e50; padding: 15px;">
+                    <h4>Not Shipped ({{ not_shipped_count }})</h4>
+                </div>
+                <div class="kanban-cards p-3">
+                    <ul class="list-group">
+                        {% for order in not_shipped_orders %}
+                            <li class="list-group-item" style="background-color: #ffffff;">
+                                <strong>Order No:</strong> {{ order.sales_order_no }}<br>
+                                <strong>Amount:</strong> {{ order.total_amount }}<br>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item text-muted">No orders found.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shipped Column -->
+        <div class="col-md-4">
+            <div class="kanban-column shadow-sm rounded bg-light" style="background-color: #e1f5fe;">
+                <div class="kanban-header" style="background-color: #81d4fa; color: #2c3e50; padding: 15px;">
+                    <h4>Shipped ({{ shipped_count }})</h4>
+                </div>
+                <div class="kanban-cards p-3">
+                    <ul class="list-group">
+                        {% for order in shipped_orders %}
+                            <li class="list-group-item" style="background-color: #ffffff;">
+                                <strong>Order No:</strong> {{ order.sales_order_no }}<br>
+                                <strong>Customer:</strong> {{ order.customer.name }}<br>
+                                <strong>Email:</strong> {{ order.customer.email }}
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item text-muted">No orders found.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delivered Column -->
+        <div class="col-md-4">
+            <div class="kanban-column shadow-sm rounded bg-light" style="background-color: #e8f5e9;">
+                <div class="kanban-header" style="background-color: #81c784; color: #2c3e50; padding: 15px;">
+                    <h4>Delivered ({{ delivered_count }})</h4>
+                </div>
+                <div class="kanban-cards p-3">
+                    <ul class="list-group">
+                        {% for order in delivered_orders %}
+                            <li class="list-group-item" style="background-color: #ffffff;">
+                                <strong>Order No:</strong> {{ order.sales_order_no }}<br>
+                                <strong>Customer:</strong> {{ order.customer.name }}<br>
+                                <strong>Email:</strong> {{ order.customer.email }}<br>
+                                <strong>Address:</strong> {{ order.customer.address }}
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item text-muted">No orders found.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Refresh Button -->
+    <div class="text-center mt-4">
+        <a href="{% url 'packages' %}" class="btn btn-outline-primary btn-lg">Refresh Data</a>
+    </div>
+</div>
+{% endblock %}

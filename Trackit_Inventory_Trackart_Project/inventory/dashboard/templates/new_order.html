@@ -1,0 +1,64 @@
+<!-- sales/templates/sales/new_order.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="table-container">
+    <h2 class="mb-4">New Sales Order</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.non_field_errors }}  <!-- Display non-field errors if any -->
+        
+        <div class="mb-3">
+            <label for="{{ form.customer.id_for_label }}" class="form-label">Customer</label>
+            {{ form.customer }}  <!-- Dropdown for selecting a customer -->
+            {{ form.customer.errors }}  <!-- Display errors for the customer field -->
+        </div>
+        
+        <div class="mb-3">
+            <label for="{{ form.sales_order_no.id_for_label }}" class="form-label">Sales Order No</label>
+            {{ form.sales_order_no }}  <!-- Input for Sales Order No -->
+            {{ form.sales_order_no.errors }}  <!-- Display errors for the sales order number field -->
+        </div>
+        
+        <div class="mb-3">
+            <label for="{{ form.reference_no.id_for_label }}" class="form-label">Reference No</label>
+            {{ form.reference_no }}  <!-- Input for Reference No -->
+            {{ form.reference_no.errors }}  <!-- Display errors for the reference number field -->
+        </div>
+        
+        <div class="mb-3">
+            <label for="{{ form.order_status.id_for_label }}" class="form-label">Order Status</label>
+            {{ form.order_status }}  <!-- Dropdown for Order Status -->
+            {{ form.order_status.errors }}  <!-- Display errors for the order status field -->
+        </div>
+        
+        <div class="mb-3">
+            <label for="{{ form.shipment_status.id_for_label }}" class="form-label">Shipment Status</label>
+            {{ form.shipment_status }}  <!-- Dropdown for Shipment Status -->
+            {{ form.shipment_status.errors }}  <!-- Display errors for the shipment status field -->
+        </div>
+        
+        <div class="mb-3">
+            <label for="{{ form.total_amount.id_for_label }}" class="form-label">Total Amount</label>
+            {{ form.total_amount }}  <!-- Input for Total Amount -->
+            {{ form.total_amount.errors }}  <!-- Display errors for the total amount field -->
+        </div>
+        
+        <div class="mb-3">
+            <label for="{{ form.amount_received.id_for_label }}" class="form-label">Amount Received</label>
+            {{ form.amount_received }}  <!-- Input for Amount Received -->
+            {{ form.amount_received.errors }}  <!-- Display errors for the amount received field -->
+        </div>
+       
+       
+        <div class="mb-3">
+            <label for="{{ form.order_date.id_for_label }}" class="form-label">Order Date</label>
+            {{ form.order_date }}  <!-- Input for Order Date -->
+            {{ form.order_date.errors }}  <!-- Display errors for the order date field -->
+        </div>
+        
+        <button type="submit" class="btn new-button">Add Sales Order</button>
+        <a href="{% url 'sales_order' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

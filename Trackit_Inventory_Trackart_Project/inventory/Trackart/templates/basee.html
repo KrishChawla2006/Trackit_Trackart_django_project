@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+        {% block title_block %}
+        {% endblock %}
+
+   
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/83d21c89d9.js" crossorigin="anonymous"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/yourfontawesomekit.js"></script> 
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+{% block style_block %}
+    
+{% endblock %}
+    </head>
+<body>
+    <nav class="navbar navbar-expand-lg shadow-sm" style="background-color: #f9f4f0; font-family: 'Open Sans', sans-serif;">
+        <div class="container-fluid px-5 py-3 d-flex align-items-center">
+            <!-- Logo -->
+            <img src="{% static './images/logo.jpeg' %}" alt="TrackArt Logo" style="height: 60px;position: relative;left:-40px;" class="img-fluid rounded">
+          
+          </a>
+          <span class="me-3" style="position: relative;left: -30px;">Hello, {{ user.username }}!</span>
+            <!-- Right side (Cart, Wish, etc.) -->
+            <div class="d-flex align-items-center gap-4 ms-auto">
+                <!-- Home -->
+                <a href="{% url 'home' %}" class="text-dark d-flex align-items-center text-decoration-none fs-5 px-3 py-2 rounded-pill shadow-sm custom-icon-link">
+                    <i class="fa-solid fa-house me-2"></i>
+                    <span>Home</span>
+                </a>
+               
+    
+                <!-- Products -->
+                <a href="{% url 'products' %}" class="text-dark d-flex align-items-center text-decoration-none fs-5 px-3 py-2 rounded-pill shadow-sm custom-icon-link">
+                    <i class="fa-solid fa-store me-2"></i>
+                    <span>Products</span>
+                </a>
+                {% if user_role == "user" %}
+                <!-- Wishlist -->
+                <a href="{% url 'wishlist_button' %}" class="text-dark d-flex align-items-center text-decoration-none fs-5 px-3 py-2 rounded-pill shadow-sm custom-icon-link">
+                    <i class="fa-regular fa-heart me-2"></i>
+                    <span>Wishlist</span>
+                </a>
+            
+                <!-- Cart -->
+                <a href="{% url 'cart_button' %}" class="text-dark d-flex align-items-center text-decoration-none fs-5 px-3 py-2 rounded-pill shadow-sm custom-icon-link">
+                    <i class="fa-solid fa-cart-shopping me-2"></i>
+                    <span>Cart</span>
+                </a>
+                {% endif %}
+                <a href="{% url 'logout' %}" class="btn btn-outline-danger">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Bottom Navbar (Categories with Multiple Dropdowns) -->
+    <nav class="navbar navbar-expand-lg navbar-light border-top border-bottom shadow-sm" style="background-color: #e9decf;">
+        <div class="container px-5">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#categoryNavbar"
+            aria-controls="categoryNavbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+      
+          <div class="collapse navbar-collapse py-2" id="categoryNavbar">
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0 nav-underline gap-3">
+              <li class="nav-item " style="min-width: 25%;"><form method="get" action="{% url 'product_search' %}">
+                <input type="text" name="q" placeholder="Search products..."  style="display: inline;height: 20%;width: 65%;" value="{{value}}" class="form-control me-2 bg-light"> <button type="submit" style="display: inline;width:30%"class="btn bg-light">Search</button>
+            </form>
+            </li>
+              <!-- Furniture Dropdown -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle fw-semibold text-dark" href="#" id="furnitureDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Furniture
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="furnitureDropdown">
+                  <li><a class="dropdown-item" href="{%url 'furniture' %}">View all Items</a></li>
+                            <li><a class="dropdown-item" href="{%url 'livingroom' %}">Living Room</a></li>
+                            <li><a class="dropdown-item" href="{%url 'diningroom' %}">Dining Room</a></li>
+                            <li><a class="dropdown-item" href="{%url 'bedroom' %}">Bedroom</a></li>
+                            <li><a class="dropdown-item" href="{%url 'outdoor' %}">Outdoor</a></li>
+                            <li><a class="dropdown-item" href="{%url 'home_office_furniture' %}">Home Office Furnituree</a></li>
+                            <li><a class="dropdown-item" href="{%url 'entry_way_furniture' %}">Entryway Furniture</a></li>
+                </ul>
+              </li>
+      
+              <!-- Tabletop & Bar Dropdown -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle fw-semibold text-dark" href="#" id="tabletopBarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Tabletop & Bar
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="tabletopBarDropdown">
+                  <li><a class="dropdown-item" href="{%url 'tabletop_bar' %}">View all Items</a></li>
+                  <li><a class="dropdown-item" href="{%url 'dinnerware' %}">Dinnerware</a></li>
+                  <li><a class="dropdown-item" href="{%url 'serveware' %}">Serveware</a></li>
+                  <li><a class="dropdown-item" href="{%url 'drinkware' %}">Drinkware</a></li>
+                  <li><a class="dropdown-item" href="{%url 'bar_tools_accessories' %}">Bar Tools & Accessories</a></li>
+                  <li><a class="dropdown-item" href="{%url 'table_linnens' %}">Table Linens</a></li>
+                </ul>
+              </li>
+      
+              <!-- Kitchen Dropdown -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle fw-semibold text-dark" href="#" id="kitchenDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Kitchen
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="kitchenDropdown">
+                  <li><a class="dropdown-item" href="{%url 'kitchen' %}">View all Items</a></li>
+                            <li><a class="dropdown-item" href="{%url 'kitchen_appliences_electronics' %}">Kitchen Appliance & Electronics</a></li>
+                            <li><a class="dropdown-item" href="{%url 'coffee_espresso_tea' %}">Coffee, Espresso & Tea Machines</a></li>
+                            <li><a class="dropdown-item" href="{%url 'cookware_bakeware' %}">Cookware & Bakeware</a></li>
+                            <li><a class="dropdown-item" href="{%url 'cutlury_knive' %}">Cutlery & Knives</a></li>
+                </ul>
+              </li>
+      
+              <!-- Bedding Dropdown -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle fw-semibold text-dark" href="#" id="beddingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Bedding
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="beddingDropdown">
+                  <li><a class="dropdown-item" href="{%url 'bedding' %}">View all Items</a></li>
+                            <li><a class="dropdown-item" href="{%url 'bedding_essentials' %}">Bedding Essentials</a></li>
+                </ul>
+              </li>
+      
+              <!-- Bath Dropdown -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle fw-semibold text-dark" href="#" id="bathDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Bath
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="bathDropdown">
+                  <li><a class="dropdown-item" href="{%url 'Bath' %}">View all Items</a></li>
+                            <li><a class="dropdown-item" href="{%url 'bath_linnens_towels' %}">Bath Linens & Towels</a></li>
+                            <li><a class="dropdown-item" href="{%url 'bath_accessories_storage' %}">Bath Accessories & Storage</a></li>
+                            <li><a class="dropdown-item" href="{%url 'bath_hardware' %}">Bath Hardware</a></li>
+                            <li><a class="dropdown-item" href="{%url 'bath_furniture' %}">Bath Furniture</a></li>
+                            <li><a class="dropdown-item" href="{%url 'bath_sent' %}">Bath Scents</a></li>
+                </ul>
+              </li>
+      
+              <!-- Decor & Pillow Dropdown -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle fw-semibold text-dark" href="#" id="decorPillowDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Decor & Pillow
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="decorPillowDropdown">
+                  <li><a class="dropdown-item" href="{%url 'Decor_Pillow' %}">View all Items</a></li>
+                            <li><a class="dropdown-item" href="{%url 'pillows_cushions' %}">Pillows & Cushions</a></li>
+                            <li><a class="dropdown-item" href="{%url 'mirrors' %}">Mirrors</a></li>
+                            <li><a class="dropdown-item" href="{%url 'botanicals_vases' %}">Botanicals & Vases</a></li>
+                            <li><a class="dropdown-item" href="{%url 'decorative_objects' %}">Decorative Objects</a></li>
+                </ul>
+              </li>
+      
+              <!-- Lighting Dropdown -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle fw-semibold text-dark" href="#" id="lightingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Lighting
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="lightingDropdown">
+                  <li><a class="dropdown-item" href="{%url 'lighting' %}">View all Items</a></li>
+                  <li><a class="dropdown-item" href="{%url 'ceiling_lights' %}">Ceiling Lights</a></li>
+                  <li><a class="dropdown-item" href="{%url 'table_floor_lamps' %}">Table & Floor Lamps</a></li>
+                  <li><a class="dropdown-item" href="{%url 'wall_light_sconces' %}">Wall Lights & Sconces</a></li>
+                </ul>
+              </li>
+      
+              <!-- Window Dropdown -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle fw-semibold text-dark" href="#" id="windowDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Window
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="windowDropdown">
+                  <li><a class="dropdown-item" href="{%url 'window' %}">View all Items</a></li>
+                  <li><a class="dropdown-item" href="{%url 'all_window_curtains' %}">All Window Curtains</a></li>
+                  <li><a class="dropdown-item" href="{%url 'blackout_curtains' %}">Blackout Curtains</a></li>
+                  <li><a class="dropdown-item" href="{%url 'sheer_curtains' %}">Sheer Curtains</a></li>
+                  <li><a class="dropdown-item" href="{%url 'window_curtain_hardware' %}">Window Curtains Hardware</a></li>
+                </ul>
+              </li>
+      
+            </ul>
+          </div>
+        </div>
+      </nav>
+    
+
+
+
+<main>
+
+    {% block main_block %}
+        
+    {% endblock %}
+
+</main>
+
+
+  <!-- Replace the empty footer tag with this code -->
+<footer class="bg-light pt-5 pb-3">
+    <div class="container">
+        <!-- Main Footer Content -->
+        <div class="row mb-4">
+            <!-- Orders Section -->
+            <div class="col-md-3">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="fas fa-box fa-2x me-2"></i>
+                    <h5 class="mb-0">Orders</h5>
+                </div>
+                <p class="text-muted">Track your orders or schedule delivery</p>
+                <div>
+                    <a href="#" class="text-decoration-none text-muted">Track Order</a><br>
+                    <a href="#" class="text-decoration-none text-muted">Schedule Delivery</a>
+                </div>
+            </div>
+
+            <!-- Contact Section -->
+            <div class="col-md-3">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="fas fa-comments fa-2x me-2"></i>
+                    <h5 class="mb-0">Contact & Store</h5>
+                </div>
+                <p class="text-muted">Questions? Contact us at:</p>
+                <p><a href="tel:+1234567890" class="text-decoration-none text-muted">(123) 456-7890</a></p>
+                <div>
+                    <a href="#" class="text-decoration-none text-muted">Chat With Us</a><br>
+                    <a href="#" class="text-decoration-none text-muted">Find a Store</a>
+                </div>
+            </div>
+
+            <!-- Resources Section -->
+            <div class="col-md-3">
+                <h5 class="mb-3">Resources</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-decoration-none text-muted">Free Design Services</a></li>
+                    <li><a href="#" class="text-decoration-none text-muted">Wedding Registry</a></li>
+                    <li><a href="#" class="text-decoration-none text-muted">Gift Cards</a></li>
+                    <li><a href="#" class="text-decoration-none text-muted">Trade Program</a></li>
+                    <li><a href="#" class="text-decoration-none text-muted">Product Recalls</a></li>
+                </ul>
+            </div>
+
+            <!-- Company Section -->
+            <div class="col-md-3">
+                <h5 class="mb-3">Our Company</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-decoration-none text-muted">About Us</a></li>
+                    <li><a href="#" class="text-decoration-none text-muted">Careers</a></li>
+                    <li><a href="#" class="text-decoration-none text-muted">Responsible Design</a></li>
+                    <li><a href="#" class="text-decoration-none text-muted">Accessibility Statement</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Bottom Footer -->
+        <div class="border-top pt-3">
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center">
+                        <div class="mb-2">
+                            <small class="text-muted">
+                                &copy; 2025 TrackArt. All rights reserved.
+                            </small>
+                        </div>
+                        <div class="d-flex gap-3 mb-2">
+                            <a href="#" class="text-decoration-none text-muted small">Terms of Use</a>
+                            <a href="#" class="text-decoration-none text-muted small">Privacy</a>
+                            <a href="#" class="text-decoration-none text-muted small">Cookie Settings</a>
+                            <a href="#" class="text-decoration-none text-muted small">Accessibility</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

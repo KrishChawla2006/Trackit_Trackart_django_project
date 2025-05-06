@@ -1,0 +1,150 @@
+{% extends 'basee.html' %}
+
+
+
+{% block title_block %}
+    
+<title>Product Detail</title>
+{% endblock %}
+    {% block style_block %}
+        
+    <style>
+      
+        .thumbnail-img:hover {
+            border-color: #007bff;
+        }
+        .original-price {
+            font-size: 1rem;
+            margin-left: 10px;
+        }
+        .discount {
+            font-size: 1rem;
+            margin-left: 10px;
+            color: #dc3545;
+        }
+        .thumbnail{
+            cursor: pointer;
+            
+            
+        }
+        </style>
+{% endblock %}
+{% block main_block %}
+    
+<div class="container mt-4">
+    <div class="row row-cols-2 row-cols-md-1 g-2" style="margin: 0;padding: 0%;position: relative;left: -10%;">
+        <!-- Product Images Section -->
+        <div class="col-md-2" style="margin: 0;padding: 0%;">
+                
+                   <div>
+                       <h5 style="font-family: sans-serif;">Varieties:</h5>
+                       <img src="{{product.image_link}}" class="img-fluid thumbnail" onclick="changeMainImage(this.src)" alt="Thumbnail 1" style="height: 13em;border: 2px solid black;"></div> <br>
+                       
+                    
+                </div>
+
+            <!-- </div> -->
+            <div class="col-md-6">
+                <div class="main-image mb-3">
+                    <img src="{{product.image_link}}" class="img-fluid" id="mainImage" alt="Product" style="border: 2px solid black; height: 30em;">
+                </div>
+
+            </div>
+
+            <!-- Product Details Section -->
+            <div class="col-md-4">
+                <h1 class="product-title mb-3">{{product.description}}</h1>
+                
+               
+               
+
+                <!-- Price Section -->
+                <div class="price-section mb-4">
+                    <h2 class="current-price">
+                        ₹{{product.offer_price}}
+                        <span class="original-price text-muted text-decoration-line-through">₹{{product.original_price}}</span>
+                        <span class="discount">-{{product.discount}}%</span>
+                    </h2>
+                    <p class="text-success">Inclusive of all taxes</p>
+                </div>
+
+                <!-- Offers Section -->
+                <div class="offers-section mb-4">
+                    <h5>Available Offers</h5>
+                    <div class="offer-cards">
+                        <div class="offer-card p-3 mb-2 bg-light">
+                            <i class="fas fa-tag text-primary"></i>
+                            <span>Bank Offer: Upto ₹150.00 discount on Credit Cards</span>
+                        </div>
+                        <div class="offer-card p-3 mb-2 bg-light">
+                            <i class="fas fa-tag text-primary"></i>
+                            <span>No Cost EMI available on selected cards</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add to Cart Section -->
+                <div class="purchase-section">
+                  
+                    <a href="{% url 'product_cart' product_id=product.id %}" style="color: white; text-decoration: none;">
+                    <button class="btn btn-primary btn-lg me-2">Add to Cart</button>
+                        </a>
+                </div>
+
+                <!-- Features Section -->
+                <div class="features-section mt-4">
+                    <div class="d-flex justify-content-between text-center">
+                        <div class="feature">
+                            <i class="fas fa-undo fa-2x mb-2"></i>
+                            <p>7 Days Service</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-truck fa-2x mb-2"></i>
+                            <p>Free Delivery</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-shield-alt fa-2x mb-2"></i>
+                            <p>1 Year Warranty</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-lock fa-2x mb-2"></i>
+                            <p>Secure Payment</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    
+    <!-- Image Gallery Script -->
+    <script>
+        function changeMainImage(src) {
+            document.getElementById('mainImage').src = src;
+        }
+    </script>
+    
+    <!-- Recently Viewed Section -->
+    <hr class="mt-5 mb-4">
+    <h3 class="mt-4 mb-3" style="font-family: sans-serif; font-weight: 600;">Recently Viewed Products</h3>
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+      {% for p in recently_viewed_products %}
+        <div class="col">
+          <div class="card h-100 shadow-sm border border-dark">
+            <img src="{{ p.image_link }}" class="card-img-top" alt="{{ p.description }}" style="height: 13em; object-fit: cover; border-bottom: 1px solid #ccc;">
+            <div class="card-body">
+              <h5 class="card-title" style="font-size: 1.1rem; font-weight: 500;">{{ p.description|truncatechars:40 }}</h5>
+            </div>
+            <div class="card-footer bg-transparent border-top-0 text-center">
+              <a href="{% url 'product_detail' p.id %}" class="btn btn-primary btn-sm px-4">View</a>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-muted">No recently viewed products.</p>
+      {% endfor %}
+    </div>         
+{% endblock %}

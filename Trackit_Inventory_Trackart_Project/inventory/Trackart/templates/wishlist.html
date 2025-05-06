@@ -1,0 +1,102 @@
+{% extends 'basee.html' %}
+{% block title_block %}
+    <title>wishlist</title>
+{% endblock %}
+{% block style_block %}
+    
+<style>
+    .product-card {
+        border: 1px solid #dee2e6;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .quantity-input {
+            width: 70px;
+        }
+        .original-price {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+        .sale-price {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 25px;
+            color: #dc3545;
+            cursor: pointer;
+        }
+        </style>
+        {% endblock %}
+
+        {% block main_block %}
+            {% if user.wishlist_set.all %}
+                
+            <div class="container mt-5">
+                <h2 class="mb-4">My Wishlist</h2>
+                
+                <div class="row">
+                    <!-- Product Card 1 -->
+        <!-- for loop -->
+        {% for item in user.wishlist_set.all %}
+            <div class="product-card position-relative">
+                <span class="remove-btn">
+                <a href="{% url 'delete_from_wishlist' item_id=item.id %}" style="text-decoration: none;color: #dc3545;">
+                    <i class="fas fa-times"></i>Remove</span>
+                </a>
+                <div class="row">     
+                    
+                    
+                    <div class="col-md-5">
+                        <img src="{{item.image_link}}" class="product-image" alt="Moon Brass Chandelier">
+                    </div>
+                        <div class="col-md-7">
+                            <h5>{{item.description}}</h5>
+                            <p class="text-muted">SKU: 561403</p>
+                            <div class="price-section mb-3">
+                                <span class="sale-price">Sale {{item.offer_price}}</span>
+                                <span class="original-price ms-2">reg. {{item.original_price}}</span>
+                            </div>
+                            <a href="{%url 'wishlist_cart_btn' product_id=item.id%}" style="text-decoration: none;color: white;" target="_blank">
+                                <button class="btn btn-dark mb-2">
+                                    ADD TO CART
+
+                                </button>
+                            
+                            </a>
+                        </div>
+                        
+                       </div></div>
+
+                        {% endfor %}
+
+                   
+                </div>
+                <!-- end for loop -->
+                
+            </div>
+        </div>
+    </div>
+    
+        {% else %}
+            <div class="container mt-5">
+                <h2 class="mb-4">My Wishlist:</h2>
+                    <div class="alert alert-info text-center mt-5" role="alert">
+                    Your wishlist is empty. Start adding items to your wishlist!</div> 
+            </div>
+        {% endif %}
+
+
+
+
+
+    
+    
+    {% endblock %}

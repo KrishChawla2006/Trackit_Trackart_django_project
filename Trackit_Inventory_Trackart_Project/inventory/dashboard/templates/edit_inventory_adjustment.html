@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Edit Inventory Adjustment</h2>
+    <form method="POST" action="{% url 'edit_inventory_adjustment' adjustment.id %}">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="reason" class="form-label">Reason</label>
+            <input type="text" class="form-control" name="reason" value="{{ adjustment.reason }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" name="description" required>{{ adjustment.description }}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="item_name" class="form-label">Item Name</label>
+            <input type="text" class="form-control" name="item_name" value="{{ adjustment.item_name }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="quantity_available" class="form-label">Quantity Available</label>
+            <input type="number" class="form-control" name="quantity_available" value="{{ adjustment.quantity_available }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="new_quantity_on_hand" class="form-label">New Quantity on Hand</label>
+            <input type="number" class="form-control" name="new_quantity_on_hand" value="{{ adjustment.new_quantity_on_hand }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="quantity_adjusted" class="form-label">Quantity Adjusted</label>
+            <input type="number" class="form-control" name="quantity_adjusted" value="{{ adjustment.quantity_adjusted }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="account" class="form-label">Account</label>
+            <input type="text" class="form-control" name="account" value="{{ adjustment.account }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="reference_number" class="form-label">Reference Number</label>
+            <input type="text" class="form-control" name="reference_number" value="{{ adjustment.reference_number }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Update Adjustment</button>
+        <a href="{% url 'inventory_adjustments' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

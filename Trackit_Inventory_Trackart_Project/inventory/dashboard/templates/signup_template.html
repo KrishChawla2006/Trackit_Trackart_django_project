@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Our Shop!</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            background-color: #ffffff;
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2c3e50;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        p {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #999;
+            text-align: center;
+        }
+        .highlight {
+            color: #27ae60;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <h2>Thank You for Registering!</h2>
+        <p>Hello <span class="highlight">{{ username }}</span>,</p>
+        <p>We're excited to welcome you to <strong>Our Shop</strong>! 🎉</p>
+        <p>Your account has been successfully created with the following details:</p>
+        <p><strong>Email:</strong> {{ email }}<br>
+           <strong>Role:</strong> {{ role }}</p>
+        <p>We hope you enjoy shopping with us. Check out our latest collections and deals!</p>
+        <p style="margin-top: 30px;">Happy Shopping!<br><strong>The Our Shop Team 🛍️</strong></p>
+        <div class="footer">
+            &copy; 2025 Our Shop. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

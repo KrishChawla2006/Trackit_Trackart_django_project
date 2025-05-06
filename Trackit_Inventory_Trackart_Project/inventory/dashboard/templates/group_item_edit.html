@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST" action="{% url 'group_item_add' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="category_name">Item Group Name:</label>
+        <input type="text" class="form-control" id="category_name" name="category_name" value="{{category.category_name}}" required>
+    </div>
+    <div class="form-group">
+        <label for="category_remarks">Description:</label>
+        <input type="text" class="form-control" id="category_remarks" name="category_remarks" value="{{category.category_remarks}}" required>
+    </div>
+    <div class="form-group">
+        <label for="category_units">Unit:</label>
+        <input type="text" class="form-control" id="category_units" name="category_units" value="{{category.unit}}">
+    </div>
+    <button type="submit" class="btn btn-primary btn-block mt-3">Save</button>
+    <a href="{% url 'group_items' %}" class="btn btn-secondary btn-block mt-2">Cancel</a>
+</form>
+{% endblock %}

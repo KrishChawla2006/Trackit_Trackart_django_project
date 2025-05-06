@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Edit Purchase Order</h1>
+    <form method="POST" action="{% url 'edit_purchase_order' order.id %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="purchase_order_no" class="form-label">Purchase Order No.</label>
+            <input type="text" class="form-control" id="purchase_order_no" name="purchase_order_no" value="{{ order.purchase_order_no }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="vendor_id" class="form-label">Vendor</label>
+            <select class="form-select" id="vendor_id" name="vendor_id" required>
+                <option value="">Select Vendor</option>
+                {% for vendor in vendors %}
+                    <option value="{{ vendor.id }}" {% if vendor.id == order.vendor.id %}selected{% endif %}>{{ vendor.company_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="reference_no" class="form-label">Reference No.</label>
+            <input type="text" class="form-control" id="reference_no" name="reference_no" value="{{ order.reference_no }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="amount" class="form-label">Total Amount</label>
+            <input type="number" class="form-control" id="amount" name="amount" value="{{ order.amount }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="status" class="form-label">Status</label>
+            <select class="form-select" id="status" name="status" required>
+                <option value="">Select Status</option>
+                <option value="Pending" {% if order.status == "Pending" %}selected{% endif %}>Pending</option>
+                <option value="Approved" {% if order.status == "Approved" %}selected{% endif %}>Approved</option>
+                <option value="Received" {% if order.status == "Received" %}selected{% endif %}>Received</option>
+                <option value="Paid" {% if order.status == "Paid" %}selected{% endif %}>Paid</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a href="{% url 'purchase_orders' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

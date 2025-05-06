@@ -1,0 +1,99 @@
+<!-- templates/purchasereceives.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="my-4">Purchase Receives Dashboard</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="kanban-column pending">
+                <div class="kanban-header bg-warning text-white p-2">
+                    <h4>Pending ({{ Pending_count }})</h4>
+                </div>
+                <div class="kanban-cards">
+                    <ul class="list-group">
+                        {% for order in Pending_orders %}
+                            <li class="list-group-item">
+                                <strong>Order No:</strong> {{ order.purchase_order_no }}<br>
+                                <strong>Vendor:</strong> {{ order.vendor}}<br>
+                                <strong>Amount:</strong> {{ order.amount }}<br>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">No pending orders found.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="kanban-column approved">
+                <div class="kanban-header bg-info text-white p-2">
+                    <h4>Approved ({{ Approved_count }})</h4>
+                </div>
+                <div class="kanban-cards">
+                    <ul class="list-group">
+                        {% for order in Approved %}
+                            <li class="list-group-item">
+                                <strong>Order No:</strong> {{ order.purchase_order_no }}<br>
+                                <strong>Vendor:</strong> {{ order.vendor}}<br>
+                                <strong>Amount:</strong> {{ order.amount }}<br>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">No approved orders found.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="kanban-column received">
+                <div class="kanban-header bg-success text-white p-2">
+                    <h4>Received ({{ Received_count }})</h4>
+                </div>
+                <div class="kanban-cards">
+                    <ul class="list-group">
+                        {% for order in Received %}
+                            <li class="list-group-item">
+                                <strong>Order No:</strong> {{ order.purchase_order_no }}<br>
+                                <strong>Vendor:</strong> {{ order.vendor}}<br>
+                                <strong>Amount:</strong> {{ order.amount }}<br>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">No received orders found.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="kanban-column paid">
+                <div class="kanban-header bg-secondary text-white p-2">
+                    <h4>Paid ({{ Paid_count }})</h4>
+                </div>
+                <div class="kanban-cards">
+                    <ul class="list-group">
+                        {% for order in Paid %}
+                            <li class="list-group-item">
+                                <strong>Order No:</strong> {{ order.purchase_order_no }}<br>
+                                <strong>Vendor:</strong> {{ order.vendor }}<br>
+                                <strong>Amount:</strong> {{ order.amount }}<br>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">No paid orders found.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Refresh Button -->
+    <div class="text-center">
+        <a href="{% url 'purchasehogyi' %}" class="btn btn-primary">Refresh Data</a>
+    </div>
+</div>
+{% endblock %}

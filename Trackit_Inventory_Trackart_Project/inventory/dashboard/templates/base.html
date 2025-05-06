@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inventory Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      font-size: 1.05rem;
+    }
+    body {
+        font-family: 'Inter', sans-serif;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: 600;
+    }
+
+    .card-title {
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .text-muted, .card-text, .small {
+        font-size: 0.875rem;
+    }
+
+    .fs-4 {
+        font-size: 1.5rem !important;
+    }
+
+    .fs-5 {
+        font-size: 1.25rem !important;
+    }
+
+    .fs-6 {
+        font-size: 1rem !important;
+    }
+  .heading-highlight {
+      color: #4ea8de; /* Calmer, soft blue */
+      background: linear-gradient(to right, #21263c, #181c30);
+      padding: 12px 20px;
+      border-radius: 20px;
+      display: inline-block;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+  .navish-btn {
+    background: linear-gradient(135deg, #001f3f, #0074D9);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease-in-out;
+}
+/* Category List Page Styles */
+
+.category-header {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #003366;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 1rem;
+}
+
+.add-category-btn {
+    background: linear-gradient(135deg, #002B5B, #0066CC);
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.8rem;
+    transition: all 0.3s ease;
+}
+
+.add-category-btn:hover {
+    background: linear-gradient(135deg, #00509E, #003F7F);
+    transform: scale(1.03);
+}
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table thead {
+    background-color: #f8f9fa;
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+}
+
+.modal-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.modal-footer .btn-danger {
+    background: linear-gradient(135deg, #d32f2f, #f44336);
+    border-radius: 0.5rem;
+}
+
+.modal-footer .btn-secondary {
+    background-color: #e0e0e0;
+    border-radius: 0.5rem;
+}
+
+.modal-footer .btn:hover {
+    transform: scale(1.05);
+}
+
+.select-all-checkbox {
+    width: 25px;
+    height: 25px;
+}
+
+
+.navish-btn:hover {
+    background: linear-gradient(135deg, #0074D9, #0055A5);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100%;
+      background-color: #21263c;
+      color: #fff;
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      z-index: 999;
+    }
+
+    .sidebar .navbar-brand {
+      font-size: 20px;
+      background-color: #181c30;
+      padding: 15px 20px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .sidebar a {
+      color: #cfd8e3;
+      text-decoration: none;
+      display: block;
+      padding: 10px 20px;
+      border-radius: 8px;
+      transition: background 0.2s ease;
+    }
+
+    .sidebar a:hover {
+      background-color: #323a56;
+      color: #ffffff;
+    }
+    :root {
+        --bs-primary: #1a2b6d; /* Navy Bluish */
+    }
+
+    .text-primary {
+        color: var(--bs-primary) !important;
+    }
+
+    .border-primary {
+        border-color: var(--bs-primary) !important;
+    }
+
+    .btn-outline-primary {
+        color: var(--bs-primary) !important;
+        border-color: var(--bs-primary) !important;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: var(--bs-primary) !important;
+        color: white !important;
+    }
+    :root {
+        --bs-primary: #1a2b6d; /* Navy Bluish */
+        --bs-accent: #4e73df; /* Accent Blue */
+        --bs-light: #f8f9fc;
+        --bs-dark: #343a40;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f0f2f5;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: 600;
+    }
+
+    .card {
+        border: none;
+        border-radius: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    .card-header {
+        font-weight: 500;
+        color: var(--bs-primary);
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(90deg, #1a2b6d 0%, #4e73df 100%);
+        color: white;
+    }
+
+    .stat-card .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .stat-card .card-body .fs-4 {
+        font-size: 2rem;
+        font-weight: 600;
+    }
+
+    .badge.bg-danger {
+        animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+        from { transform: scale(1); }
+        to { transform: scale(1.1); }
+    }
+
+    .btn-outline-primary {
+        border-color: var(--bs-primary);
+        color: var(--bs-primary);
+        transition: all 0.3s;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: var(--bs-primary);
+        color: #fff;
+    }
+
+    .list-group-item {
+        border: none;
+        padding: 0.75rem 1rem;
+    }
+
+    .dashboard-topbar {
+        background: linear-gradient(90deg, #1a2b6d 0%, #4e73df 100%);
+        height: 90px;
+        color: white;
+        border-radius: 0 0 12px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .dashboard-topbar h1 {
+        font-size: 1.8rem;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    .card:hover {
+        transform: scale(1.01);
+        transition: 0.3s ease-in-out;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    /* Topbar */
+    .topbar {
+      background-color: #fff;
+      padding: 10px 20px;
+      position: fixed;
+      top: 0;
+      left: 250px;
+      right: 0;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    .toggle-sidebar-btn {
+      font-size: 24px;
+      color: #21263c;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    .user-menu {
+      font-weight: 500;
+      color: #21263c;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Content */
+    .content {
+      margin-left: 250px;
+      padding: 80px 25px 25px 25px;
+      min-height: 100vh;
+      background-color: #f4f6f9;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+
+      .topbar {
+        left: 0;
+      }
+
+      .content {
+        margin-left: 0;
+        padding-top: 70px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="navbar-brand mb-4">
+      <i class="bi bi-box me-2"></i>
+      <span class="sidebar-text">Inventory</span>
+    </div>
+    <ul class="nav flex-column">
+      <li><a href="{%url 'home' %}" class="nav-link"><i class="bi bi-house me-2"></i>Home</a></li>
+      <li><a href="{%url 'dashboard' %}" class="nav-link"><i class="bi bi-house me-2"></i>Dashboard</a></li>
+
+      <li class="nav-item">
+        <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#inventoryMenu" role="button" aria-expanded="false">
+          <i class="bi bi-box-seam me-2"></i>Inventory
+        </a>
+        <div class="collapse" id="inventoryMenu">
+          <ul class="list-unstyled ps-3">
+            <li><a class="nav-link" href="{% url 'items' %}">Items</a></li>
+            <li><a class="nav-link" href="{% url 'group_items' %}">Item Groups</a></li>
+            <li><a class="nav-link" href="{% url 'inventory_adjustments' %}">Item Adjustments</a></li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#salesMenu" role="button" aria-expanded="false">
+          <i class="bi bi-cart me-2"></i>Sales
+        </a>
+        <div class="collapse" id="salesMenu">
+          <ul class="list-unstyled ps-3">
+            <li><a class="nav-link" href="{% url 'customer_list' %}">Customers</a></li>
+            <li><a class="nav-link" href="{% url 'sales_order' %}">Sales Orders</a></li>
+            <li><a class="nav-link" href="{% url 'packages' %}">Packages</a></li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#purchasesMenu" role="button" aria-expanded="false">
+          <i class="bi bi-receipt me-2"></i>Purchases
+        </a>
+        <div class="collapse" id="purchasesMenu">
+          <ul class="list-unstyled ps-3">
+            <li><a class="nav-link" href="{% url 'vendors' %}">Vendors</a></li>
+            <li><a class="nav-link" href="{% url 'purchase_orders' %}">Purchase Orders</a></li>
+            
+          </ul>
+        </div>
+      </li>
+
+      <li><a href="{% url 'logout' %}" class="nav-link"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="topbar">
+    <button class="toggle-sidebar-btn"><i class="bi bi-list"></i></button>
+    <div class="user-menu">
+      <i class="fa-regular fa-user"></i>
+      <span>Welcome, {{ user.username|title }}</span>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="container-fluid">
+      {% block content %}
+      {% endblock %}
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

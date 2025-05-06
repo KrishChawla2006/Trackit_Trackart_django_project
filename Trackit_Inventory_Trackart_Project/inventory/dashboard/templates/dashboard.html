@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f0f2f5;
+        color: #2c2f33;
+    }
+
+    .dashboard-topbar {
+        background: linear-gradient(90deg, #1a2b6d 0%, #4e73df 100%);
+        height: 90px;
+        color: white;
+        border-radius: 0 0 12px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .dashboard-topbar h1 {
+        font-size: 1.8rem;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .card {
+        border: none;
+        border-radius: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(90deg, #1a2b6d 0%, #4e73df 100%);
+        color: white;
+    }
+
+    .stat-card .card-body {
+        text-align: center;
+    }
+
+    .stat-card .fs-4 {
+        font-size: 2rem;
+        font-weight: 600;
+    }
+
+    .badge.bg-danger {
+        animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+        from { transform: scale(1); }
+        to { transform: scale(1.1); }
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #1a2b6d;
+        color: white;
+    }
+
+    .card-header.bg-light {
+        background-color: #e9ecef !important;
+    }
+
+    .list-group-item {
+        border: none;
+    }
+
+    .top-sell-img {
+        height: 180px;
+        object-fit: cover;
+        border-radius: 0.75rem 0.75rem 0 0;
+    }
+
+    /* 🌟 Enhanced styling */
+    .highlight-value {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #343a40;
+    }
+
+    .highlight-label {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #6c757d;
+    }
+
+    .text-muted {
+        color: #7a7f85 !important;
+    }
+
+    .low-stock-warning {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: #dc3545;
+    }
+
+    .low-stock-safe {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: #28a745;
+    }
+</style>
+
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f0f2f5;
+    }
+
+    .dashboard-topbar {
+        background: linear-gradient(90deg, #1a2b6d 0%, #4e73df 100%);
+        height: 90px;
+        color: white;
+        border-radius: 0 0 12px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .dashboard-topbar h1 {
+        font-size: 1.8rem;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .card {
+        border: none;
+        border-radius: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(90deg, #1a2b6d 0%, #4e73df 100%);
+        color: white;
+    }
+
+    .stat-card .card-body {
+        text-align: center;
+    }
+
+    .stat-card .fs-4 {
+        font-size: 2rem;
+        font-weight: 600;
+    }
+
+    .badge.bg-danger {
+        animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+        from { transform: scale(1); }
+        to { transform: scale(1.1); }
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #1a2b6d;
+        color: white;
+    }
+
+    .card-header.bg-light {
+        background-color: #e9ecef !important;
+    }
+
+    .list-group-item {
+        border: none;
+    }
+
+    .top-sell-img {
+        height: 180px;
+        object-fit: cover;
+        border-radius: 0.75rem 0.75rem 0 0;
+    }
+</style>
+
+<div class="dashboard-topbar">
+    <h1>Hello, {{ user.username|title }}!</h1>
+</div>
+
+<div class="container-fluid px-4 mt-4">
+
+    <!-- Row 1: Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card bg-gradient-primary shadow-sm">
+                <div class="card-body">
+                    <div class="text-uppercase small mb-1">Sales Activity</div>
+                    <div class="fs-4">{{ total_sales_orders }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card bg-warning text-white shadow-sm">
+                <div class="card-body">
+                    <div class="text-uppercase small mb-1">To be Shipped</div>
+                    <div class="fs-4">{{ total_to_ship }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card bg-danger text-white shadow-sm">
+                <div class="card-body">
+                    <div class="text-uppercase small mb-1">To be Delivered</div>
+                    <div class="fs-4">{{ total_to_deliver }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card bg-success text-white shadow-sm">
+                <div class="card-body">
+                    <div class="text-uppercase small mb-1">Total Inventory</div>
+                    <div class="fs-4">{{ total_inventory }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 2: Product Details + Sales Orders -->
+    <div class="row mb-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h6 class="m-0 text-primary"><i class="bi bi-box-seam me-2"></i>📦 Product Details</h6>
+                </div>
+                <div class="card-body small text-muted">
+                    <p>Low Stock Items: 
+                        <strong class="{% if low_stock_items > 0 %}low-stock-warning{% else %}low-stock-safe{% endif %}">
+                            {{ low_stock_items }}
+                        </strong>
+                        {% if low_stock_items > 0 %}
+                            <span class="badge bg-danger ms-2">Attention Needed</span>
+                        {% endif %}
+                    </p>
+                    
+                    <p>All Item Groups: <strong>{{ all_item_groups }}</strong></p>
+                    <p>All Items: <strong>{{ all_items }}</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h6 class="m-0 text-primary">🧾 Sales Orders</h6>
+                </div>
+                <div class="card-body">
+                    <h5>Total Amount: <span class="fw-bold text-dark">Rs. {{ total_sales_amount }}</span></h5>
+                    <h6 class="text-muted mt-3">Sales Orders Summary:</h6>
+                    <ul class="list-group list-group-flush">
+                        {% for status in sales_summary %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center small">
+                            {{ status.order_status }}
+                            <span class="badge bg-secondary">{{ status.count }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 3: Purchase Order + Top Selling -->
+    <div class="row mb-4">
+        <div class="col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-light">
+                    <h6 class="m-0 text-primary">🛒 Purchase Order</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>Number of Orders:</strong></p>
+                    <p class="fs-5 text-dark">{{ purchase_order_count }}</p>
+                    <hr>
+                    <p class="mb-2"><strong>Total Cost:</strong></p>
+                    <p class="fs-5 text-dark">Rs.{{ total_purchase_orders }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 text-primary">🔥 Top Selling Items</h6>
+                    {% if user_role == "manager" %}
+                    <a href="{% url 'top_selling_create' %}" class="btn btn-sm btn-outline-primary">Add New Item</a>
+                    {% endif %}
+                </div>
+                <div class="card-body row g-3">
+                    {% for item in items %}
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-sm border-0">
+                            <img src="{{ item.image_url }}" class="card-img-top top-sell-img">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ item.name }}</h6>
+                                <p class="card-text small text-muted">Quantity Sold: {{ item.quantity_sold }}</p>
+                            </div>
+                            {% if user_role == "manager" %}
+                            <div class="card-footer bg-white d-flex justify-content-between">
+                                <a href="{% url 'top_selling_edit' item.pk %}" class="btn btn-sm btn-outline-warning">Edit</a>
+                                <a href="{% url 'top_selling_delete' item.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 4: Chart -->
+   
+{% endblock %}

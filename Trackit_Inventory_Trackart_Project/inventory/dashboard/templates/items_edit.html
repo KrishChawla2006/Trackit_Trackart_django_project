@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .navish-edit-card {
+        max-width: 850px;
+        margin: 50px auto;
+        background: #ffffff;
+        border-radius: 1rem;
+        padding: 2.5rem 3rem;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .navish-edit-card h2 {
+        color: #003366;
+        font-weight: 700;
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        border-bottom: 2px solid #e0e0e0;
+        padding-bottom: 1rem;
+    }
+
+    .navish-btn-primary {
+        background: linear-gradient(135deg, #002B5B, #0066CC);
+        color: white;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        padding: 0.6rem 1.8rem;
+        transition: all 0.3s ease;
+    }
+
+    .navish-btn-primary:hover {
+        background: linear-gradient(135deg, #00509E, #003F7F);
+        transform: scale(1.03);
+    }
+
+    .navish-btn-cancel {
+        background-color: #f1f1f1;
+        color: #444;
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.6rem 1.8rem;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+
+    .navish-btn-cancel:hover {
+        background-color: #e0e0e0;
+    }
+
+    .form-group label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .form-row .form-group {
+        flex: 1 1 48%;
+    }
+
+    @media (max-width: 768px) {
+        .form-row .form-group {
+            flex: 1 1 100%;
+        }
+    }
+</style>
+
+<div class="navish-edit-card">
+    <h2>Edit Item Details</h2>
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="item_name">Item Name</label>
+                <input type="text" class="form-control" id="item_name" name="item_name" value="{{ item.item_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="item_category">Category</label>
+                <select name="item_category" id="item_category" class="form-control" required>
+                    <option value="">Select Category</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" >{% if category.id == item.item_category.id %}selected{% endif %}{{ category.category_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="item_colour">Colour</label>
+                <input type="text" class="form-control" id="item_colour" name="item_colour" value="{{ item.item_colour }}">
+            </div>
+            <div class="form-group">
+                <label for="item_size">Size</label>
+                <input type="text" class="form-control" id="item_size" name="item_size" value="{{ item.item_size }}">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="purchase_rate">Purchase Rate</label>
+                <input type="number" step="0.01" class="form-control" id="purchase_rate" name="purchase_rate" value="{{ item.purchase_rate }}" required>
+            </div>
+            <div class="form-group">
+                <label for="sales_rate">Sales Rate</label>
+                <input type="number" step="0.01" class="form-control" id="sales_rate" name="sales_rate" value="{{ item.sales_rate }}" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="quantity">Quantity</label>
+                <input type="number" class="form-control" id="quantity" name="quantity" value="{{ item.quantity }}" required>
+            </div>
+            <div class="form-group">
+                <label for="reference_number">Reference Number</label>
+                <input type="text" class="form-control" id="reference_number" name="reference_number" value="{{ item.reference_number }}">
+            </div>
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="item_remarks">Description</label>
+            <textarea class="form-control" id="item_remarks" name="item_remarks" rows="3">{{ item.item_remarks }}</textarea>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <button type="submit" class="navish-btn-primary">💾 Update Item</button>
+            <a href="{% url 'items' %}" class="navish-btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

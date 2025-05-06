@@ -1,0 +1,204 @@
+{% extends 'basee.html' %}
+{% block title_block %}
+    <title>Shopping Cart</title>
+{% endblock %}
+
+{% block style_block %}
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .cart-container {
+        padding: 2rem;
+    }
+
+    .cart-item {
+        background-color: #fff;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .cart-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .product-image {
+        max-width: 140px;
+        height: auto;
+        border-radius: 10px;
+    }
+
+    .quantity-input {
+        width: 60px;
+        text-align: center;
+        border-radius: 6px;
+        border: 1px solid #ced4da;
+    }
+
+    .remove-btn, .save-later-btn {
+        font-weight: 500;
+        transition: 0.2s;
+    }
+
+    .remove-btn:hover {
+        color: #a71d2a;
+    }
+
+    .save-later-btn:hover {
+        color: #024dbc;
+    }
+
+    .btn-outline-primary, .btn-success {
+        border-radius: 30px;
+        font-weight: 600;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #28a745, #218838);
+        border: none;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: linear-gradient(135deg, #218838, #1e7e34);
+    }
+
+    .cart-summary {
+        background: #ffffff;
+        padding: 25px;
+        border-radius: 20px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-title {
+        font-weight: bold;
+        font-size: 1.4rem;
+        color: #343a40;
+    }
+
+    .checkout-btn a {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .btn-payment {
+        border-radius: 25px;
+        font-weight: 600;
+    }
+
+    .alert-success {
+        font-size: 1.1rem;
+        border-radius: 12px;
+    }
+</style>
+{% endblock %}
+
+{% block main_block %}
+<div style="visibility: hidden;" id="order-success-message" class="alert alert-success text-center mt-5" role="alert" style="margin-bottom: 10em;">
+    ✅ Order successfully placed!
+</div>
+
+<div class="container cart-container" style="position: relative; bottom: 60px;">
+    <div class="row">
+        <!-- Cart Items Section -->
+        <div class="col-lg-8">
+            <h2 class="mb-4 fw-bold text-dark">🛒 Your Shopping Cart</h2>
+
+            {% for i in user.products_set.all %}
+            <div class="cart-item">
+                <div class="row align-items-center">
+                    <div class="col-md-3 text-center">
+                        <img src="{{i.image_link}}" alt="Product" class="product-image">
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="fw-semibold">{{i.description}}</h5>
+                        <p class="text-muted small mb-1">SKU: 561403</p>
+                        <p class="text-success mb-1"><i class="fas fa-truck me-2"></i>In stock & ready to ship</p>
+                        <p class="mb-1 text-muted">📦 Delivery in 7-14 business days</p>
+                    </div>
+                    <div class="col-md-3 text-end">
+                        <p class="h5 fw-bold text-dark">₹{{i.offer_price}}</p>
+                        <p class="text-muted text-decoration-line-through mb-2">₹{{i.original_price}}</p>
+                        <form method="POST" class="mt-2">
+                            {% csrf_token %}
+                            <input type="hidden" name="item_id" value="{{i.id}}">
+                            <div class="input-group mb-2" style="max-width: 120px; margin-left: auto;">
+                                <input type="number" name="quantity" class="form-control quantity-input" value="{{i.quantity}}" min="1" max="5" required>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-outline-primary">✔ Confirm</button>
+                        </form>
+                        <a href="{% url 'delete_from_cart' item_id=i.id %}" class="d-block mt-2">
+                            <span class="remove-btn"><i class="fas fa-trash-alt me-1"></i>Remove</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="text-center mt-4">
+                <a href="{% url 'item_quantity' %}" class="btn btn-success px-5 py-2 shadow-sm">
+                    Proceed to Order Billing
+                </a>
+            </div>
+        </div>
+
+        {% if total_price %}
+        <!-- Cart Summary Section -->
+        <div class="col-lg-4 mt-4 mt-lg-0">
+            <div class="cart-summary">
+                <h4 class="card-title mb-4">📋 Order Summary</h4>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Total Products</span>
+                    <span>₹{{total_price}}</span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Shipping</span>
+                    <span>₹99.00</span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Tax</span>
+                    <span>₹149.00</span>
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between mb-4">
+                    <h5>Total:</h5>
+                    <h5>₹{{total}}</h5>
+                </div>
+
+                <a href="{% url 'order_proceed' %}" style="text-decoration: none;">                   
+                <button class="btn btn-success w-100 mb-3 checkout-btn" onclick="showOrderSuccessMessage()">
+                        ✅ CHECKOUT NOW
+                    </button>
+                </a>
+                <a href="{% url 'purchase_history' %}" class="btn btn-outline-primary w-100 btn-payment">
+                    🧾 View Recent Purchases
+        </a>
+
+              
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    let a = document.getElementById('order-success-message');
+    function showOrderSuccessMessage() {
+        a.style.visibility = 'visible';
+        setTimeout(function() {
+            a.style.visibility = 'hidden';
+        }, 5000);
+    }
+</script>
+{% endblock %}

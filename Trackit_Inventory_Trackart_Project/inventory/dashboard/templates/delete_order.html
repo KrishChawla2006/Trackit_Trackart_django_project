@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Delete Sales Order</h2>
+    <p>Are you sure you want to delete the following order?</p>
+    
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Order No: {{ order.sales_order_no }}</h5>
+            <p><strong>Customer:</strong> {{ order.customer.name }}</p>
+            <p><strong>Email:</strong> {{ order.customer.email }}</p>
+            <p><strong>Amount:</strong> {{ order.total_amount }}</p>
+            <p><strong>Order Date:</strong> {{ order.created_at|date:"Y-m-d" }}</p>
+        </div>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete Order</button>
+        <a href="{% url 'sales_order' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
