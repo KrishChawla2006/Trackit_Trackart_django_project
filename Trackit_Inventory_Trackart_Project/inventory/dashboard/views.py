@@ -21,7 +21,7 @@ from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 
 
-FLASK_API_URL = "http://127.0.0.1:5000"
+FLASK_API_URL = "https://shau12.pythonanywhere.com/"
 
 def logout_view(request):
     logout(request)
