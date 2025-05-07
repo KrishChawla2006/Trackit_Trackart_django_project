@@ -62,148 +62,7 @@ except Exception as e:
     logger.error("Failed to initialize OllamaLLM: %s", str(e), exc_info=True)
     raise
 
-# def chat_view(request):
-#     """Handle chat requests and responses"""
-#     if request.method != 'POST':
-#         return JsonResponse({'error': 'Method not allowed'}, status=405)
-    
-#     try:
-#         # Parse request data
-#         data = json.loads(request.body)
-#         user_input = data.get('message')
-#         if not user_input:
-#             logger.error("No message provided in request")
-#             return JsonResponse({'error': 'No message provided'}, status=400)
 
-#         # Get conversation history from session
-#         conversation_context = request.session.get('conversation_context', [])
-#         context_limit = 5
-#         recent_context = "\n".join([f"User: {exchange['user']}\nAI: {exchange['ai']}" 
-#                                    for exchange in conversation_context[-context_limit:]])
-        
-#         # Prepare context with product information if applicable
-#         context = recent_context
-#         product_info = ""
-        
-#         # Check if this is a product-related query
-#         product_keywords = ['product', 'item', 'buy', 'purchase', 'shop', 'category', 'price', 
-#                            'available', 'stock', 'sale', 'discount', 'offer', 'show me']
-        
-#         is_product_query = any(keyword in user_input.lower() for keyword in product_keywords)
-        
-#         # Add product search functionality
-#         if is_product_query:
-#             # Print all available fields for debugging
-#             sample_product = Products.objects.first()
-#             if sample_product:
-#                 logger.info("Available fields in Products model:")
-#                 for field in sample_product._meta.fields:
-#                     logger.info(f"Field: {field.name}")
-            
-#             # *** FIXED: Use the correct field names from your model ***
-#             # Based on your original code, you're using 'description' not 'name'
-#             products = Products.objects.filter(
-#                 Q(description__icontains=user_input) |  # Using description instead of name
-#                 Q(category__icontains=user_input) |
-#                 Q(sub_category__icontains=user_input)
-#             )[:5]  # Limit to 5 products
-            
-#             # Log the SQL query for debugging (optional)
-#             logger.info(f"SQL Query: {str(products.query)}")
-#             logger.info(f"Found {products.count()} products")
-            
-#             if products:
-#                 product_details = []
-#                 for product in products:
-#                     # Adapt these fields to match your actual Products model
-#                     product_url = f"/products/detail/{product.id}/"
-                    
-#                     # Log each product found (for debugging)
-#                     logger.info(f"Found product: {product.description} in category {product.category}")
-                    
-#                     product_details.append({
-#                         "name": product.description,  # Using description as the product name
-#                         "price": product.offer_price,
-#                         "category": product.category,
-#                         "url": request.build_absolute_uri(product_url)
-#                     })
-                
-#                 # Format product information for the context
-#                 product_list = []
-#                 for product in product_details:
-#                     product_list.append(
-#                         f"Product: {product['name']}\n"
-#                         f"Price: ${product['price']}\n"
-#                         f"Category: {product['category']}\n"
-#                         f"URL: {product['url']}"
-#                     )
-                
-#                 product_info = "PRODUCT INFORMATION:\n" + "\n\n".join(product_list)
-                
-#                 # Add product information to context
-#                 context = f"{recent_context}\n\n{product_info}"
-#                 logger.info(f"Found {len(products)} products matching query")
-#             else:
-#                 # If no products were found with the initial query, try a broader search
-#                 # This is especially helpful for partial matches or typos
-#                 search_terms = user_input.lower().split()
-#                 if len(search_terms) > 1:
-#                     broader_query = Q()
-#                     for term in search_terms:
-#                         if len(term) > 3:  # Only use terms longer than 3 characters
-#                             broader_query |= Q(description__icontains=term)
-#                             broader_query |= Q(category__icontains=term)
-#                             broader_query |= Q(sub_category__icontains=term)
-                    
-#                     products = Products.objects.filter(broader_query)[:5]
-#                     logger.info(f"Broader search found {products.count()} products")
-                    
-#                     if products:
-#                         # Same product formatting as above
-#                         product_details = []
-#                         for product in products:
-#                             product_url = f"/products/detail/{product.id}/"
-#                             product_details.append({
-#                                 "name": product.description,
-#                                 "price": product.offer_price,
-#                                 "category": product.category,
-#                                 "url": request.build_absolute_uri(product_url)
-#                             })
-                        
-#                         product_list = []
-#                         for product in product_details:
-#                             product_list.append(
-#                                 f"Product: {product['name']}\n"
-#                                 f"Price: ${product['price']}\n"
-#                                 f"Category: {product['category']}\n"
-#                                 f"URL: {product['url']}"
-#                             )
-                        
-#                         product_info = "PRODUCT INFORMATION:\n" + "\n\n".join(product_list)
-#                         context = f"{recent_context}\n\n{product_info}"
-#                     else:
-#                         context = f"{recent_context}\n\nNo products found matching your query. Please try different keywords."
-#                         logger.info("No products found with broader search")
-#                 else:
-#                     context = f"{recent_context}\n\nNo products found matching your query. Please try different keywords."
-#                     logger.info("No products found with initial search")
-        
-#         # Generate response using the LLM
-#         logger.info(f"Generating response for: {user_input}")
-#         result = chain.invoke({"context": context, "question": user_input})
-#         ai_response = str(result) if result is not None else "I'm sorry, I couldn't process your request."
-        
-#         # Update conversation context
-#         conversation_context.append({"user": user_input, "ai": ai_response})
-#         request.session['conversation_context'] = conversation_context[-context_limit:]
-#         request.session.modified = True
-        
-#         return JsonResponse({'response': ai_response})
-    
-#     except Exception as e:
-#         logger.error("Error in chat_view: %s", str(e), exc_info=True)
-#         return JsonResponse({'error': f'Internal server error: {str(e)}'}, status=500)
-      
 def chat_view(request):
     """Handle chat requests and responses"""
     if request.method != 'POST':
@@ -349,141 +208,27 @@ def chat_view(request):
 # Function to load products data for pre-initialization if needed
 
 
-# You can add this function to your app's initialization to preload products if needed
-# products_data = load_products_data()
-# Initialize LLM and prompt template
-# template = """
-# this is ecommerce website(name=Trackart) chatbot,interacts with user:
-# Answer the question below quickly and short :
-# here is the conversation history:{context}
-# reply to question:{question}
-# if user ask something diffent with website say:"I can't say."
-# """
-# try:
-#     # Test Ollama server connection
-#     response = requests.get("http://localhost:11434", timeout=5)
-#     if response.status_code != 200:
-#         logger.error("Ollama server not running or inaccessible at http://localhost:11434")
-#         raise Exception("Ollama server not running")
-#     logger.info("Ollama server is running")
-#     model = OllamaLLM(model="llama3", num_thread=4)
-#     prompt = ChatPromptTemplate.from_template(template)
-#     chain = prompt | model
-# except Exception as e:
-#     logger.error("Failed to initialize OllamaLLM: %s", str(e), exc_info=True)
-#     raise
 
-# # def chat_view(request):
-# #     if request.method != 'POST':
-#         return JsonResponse({'error': 'Method not allowed'}, status=405)
-#     try:
-#         data = json.loads(request.body)
-#         user_input = data.get('message')
-#         if not user_input:
-#             logger.error("No message provided in request")
-#             return JsonResponse({'error': 'No message provided'}, status=400)
 
-#         # Check for product-related queries
-#         # product_keywords = ['product', 'item', 'buy', 'shop', 'category', 'price']
-#         # is_product_query = any(keyword in user_input.lower() for keyword in product_keywords)
 
-#         conversation_context = request.session.get('conversation_context', [])
-#         context_limit = 5
-#         recent_context = "\n".join([f"User: {exchange['user']}\nAI: {exchange['ai']}" for exchange in conversation_context[-context_limit:]])
 
-#             # Search for products in the database
-#         if 'product' in user_input.lower() or 'item' in user_input.lower():
-       
-#             products = [item.to_dict() for item in Products.objects.filter(
-#                 Q(category__icontains=user_input.lower()) |
-#                 Q(sub_category__icontains=user_input.lower()) |
-#                 Q(description__icontains=user_input.lower())
-#             )  ]# Limit to 3 products
 
-#             if products:
-#                 # Format product response
-#                 product_list = []
-#                 for product in products:
-#                     product_url = f"/products/detail/{product.id}/"  # Adjust URL pattern as needed
-#                     product_list.append(f"product Name:{product.description} , Price: ${product.offer_price} , Link: {request.build_absolute_uri(product_url)}")
-#                 product_response = "Here are some products you might be interested in:\n" + "\n".join(product_list)
-#                 ai_response = product_response
-#                 result = chain.invoke({"context": ai_response, "question": user_input })
-#             else:
-#                 # Fallback to LLM if no products found
-#                 logger.info("No products found, invoking LLM with question: %s", user_input)
-#                 result = chain.invoke({"context": recent_context, "question": user_input })
-#                 ai_response = str(result) if result is not None else "No response"
-#         else:
-#             # Use LLM for non-product queries
-#             logger.info("Invoking LLM with question: %s", user_input)
-#             result = chain.invoke({"context": recent_context, "question": user_input ,})
-#             ai_response = str(result) if result is not None else "No res ponse"
 
-#         # Update conversation context
-#         conversation_context.append({"user": user_input, "ai": ai_response})
-#         request.session['conversation_context'] = conversation_context[-context_limit:]
-#         request.session.modified = True
 
-#         return JsonResponse({'response': ai_response})
-#     except Exception as e:
-#         logger.error("Error in chat_view: %s", str(e), exc_info=True)
-#         return JsonResponse({'error': f'Internal server error occurred during chat processing: {str(e)}'}, status=500)
-    
 
-# def chat_view(request):
-#     if request.method != 'POST':
-#         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
-#     try:
-#         data = json.loads(request.body)
-#         user_input = data.get('message', '').strip()
-#         if not user_input:
-#             return JsonResponse({'error': 'No message provided'}, status=400)
 
-#         conversation_context = request.session.get('conversation_context', [])
-#         recent_context = "\n".join(
-#             [f"User: {msg['user']}\nAI: {msg['ai']}" for msg in conversation_context[-5:]]
-#         )
 
-#         # Check if it's a product-related query
-#         is_product_query = any(keyword in user_input.lower() for keyword in ['product', 'item', 'price', 'buy', 'category', 'shop'])
 
-#         if is_product_query:
-#             matched_products = Products.objects.filter(
-#                 Q(description__icontains=user_input) |
-#                 Q(category__icontains=user_input) |
-#                 Q(sub_category__icontains=user_input)
-#             )[:3]  # Limit to 3
 
-#             if matched_products.exists():
-#                 product_info = []
-#                 for product in matched_products:
-#                     product_url = request.build_absolute_uri(f"/products/detail/{product.id}/")
-#                     product_info.append(
-#                         f"Name: {product.description}, Price: ₹{product.offer_price}, Link: {product_url}"
-#                     )
 
-#                 product_response = "Here are some products you might like:\n" + "\n".join(product_info)
-#                 ai_response = product_response
-#             else:
-#                 logger.info("No products found, invoking LLM with question: %s", user_input)
-#                 ai_response = str(chain.invoke({"context": recent_context, "question": user_input}))
-#         else:
-              
-#               logger.info("Invoking LLM with question: %s", user_input)
-#               ai_response = str(chain.invoke({"context": recent_context, "question": user_input}))
 
-#         # Save conversation context
-#         conversation_context.append({"user": user_input, "ai": ai_response})
-#         request.session['conversation_context'] = conversation_context[-5:]
-#         request.session.modified = True
 
-#         return JsonResponse({'response': ai_response})
 
-#     except Exception as e:
-#         logger.error("Error in chat_view: %s", str(e), exc_info=True)
-#         return JsonResponse({'error': f"Server error: {str(e)}"}, status=500)    
+
+
+
+
 def speak_view(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'Method not allowed'}, status=405)
