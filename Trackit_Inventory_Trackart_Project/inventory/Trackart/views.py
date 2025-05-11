@@ -176,7 +176,7 @@ def chat_view(request):
                         for product in product_details:
                             product_list.append(
                                 f"Product: {product['name']}\n"
-                                f"Price: ${product['price']}\n"
+                                f"Price: ₹{product['price']}\n"
                                 f"Category: {product['category']}\n"
                                 f"URL: {product['url']}"
                             )
